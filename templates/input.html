@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Input Features</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/js/input.js" defer></script>
+</head>
+<body>
+    <h2>Disease Predictor</h2>
+
+    <label for="disease">Select Disease:</label>
+    <select id="disease" onchange="renderFields()">
+        <option value="cancer">Breast Cancer</option>
+        <option value="diabetes">Diabetes</option>
+    </select>
+
+    <form id="inputForm" onsubmit="handleSubmit(event)">
+        <div id="formFields"></div>
+        <button type="submit">Predict</button>
+    </form>
+</body>
+</html>

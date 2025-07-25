@@ -1,142 +1,89 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
-import joblib
+from fastapi import FastAPI, Request, Form
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
 import numpy as np
-from typing import List
-import logging
-import os
+import joblib
 
-# ================= Setup Logging =================
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+app = FastAPI()
 
-# ================= Load Models =================
-try:
-    cancer_model = joblib.load("models/breast_cancer_model.pkl")
-    logging.info("✅ Breast cancer model loaded successfully.")
-except Exception as e:
-    logging.error(f"❌ Error loading breast cancer model: {e}")
-    raise RuntimeError("Breast cancer model could not be loaded.")
+# Mount static and templates
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
-try:
-    diabetes_model = joblib.load("models/diabetes_model.pkl")
-    logging.info("✅ Diabetes model loaded successfully.")
-except Exception as e:
-    logging.error(f"❌ Error loading diabetes model: {e}")
-    raise RuntimeError("Diabetes model could not be loaded.")
+# Load ML models
+cancer_model = joblib.load("models/breast_cancer_model.pkl")
+diabetes_model = joblib.load("models/diabetes_model.pkl")
 
-# ================= Initialize App =================
-app = FastAPI(
-    title="Disease Prediction API",
-    version="2.0",
-    description="API to predict Breast Cancer and Diabetes using ML models"
-)
+# Input format
+class InputFeatures(BaseModel):
+    features: list[float]
 
-# ================= Input Schemas =================
-class CancerFeatures(BaseModel):
-    features: List[float] = Field(
-        ..., min_items=30, max_items=30,
-        example=[14.2, 20.7, 92.0, 633.0, 0.09, 0.19, 0.2, 0.07, 0.18, 0.06,
-                 0.4, 1.0, 3.0, 40.0, 0.006, 0.05, 0.06, 0.02, 0.02, 0.006,
-                 16.0, 28.0, 110.0, 800.0, 0.1, 0.4, 0.5, 0.15, 0.3, 0.07]
-    )
-
-class CancerBatch(BaseModel):
-    records: List[CancerFeatures]
-
-class DiabetesFeatures(BaseModel):
-    features: List[float] = Field(
-        ..., min_items=8, max_items=8,
-        example=[2, 120, 70, 27, 85, 30.5, 0.3, 25]
-    )
-
-class DiabetesBatch(BaseModel):
-    records: List[DiabetesFeatures]
-
-# ================= Root Endpoint =================
-@app.get("/")
-def home():
-    return {
-        "message": "🚀 Disease Prediction API is running!",
-        "available_endpoints": [
-            "/predict_cancer",
-            "/batch_predict_cancer",
-            "/predict_diabetes",
-            "/batch_predict_diabetes"
-        ]
-    }
-
-# ================= Cancer Endpoints =================
+# API Route: Breast Cancer Prediction
 @app.post("/predict_cancer")
-def predict_cancer(data: CancerFeatures):
-    input_data = np.array(data.features).reshape(1, -1)
-    prediction = cancer_model.predict(input_data)[0]
-    proba = cancer_model.predict_proba(input_data)[0]
+def predict_cancer(data: InputFeatures):
+    features = np.array(data.features).reshape(1, -1)
+    prediction = cancer_model.predict(features)[0]
+    proba = cancer_model.predict_proba(features)[0]
 
     result = {
-        "prediction": "Benign" if prediction == 1 else "Malignant",
-        "confidence": {
-            "Benign": round(proba[1], 4),
-            "Malignant": round(proba[0], 4)
-        }
+        "prediction": "Malignant" if prediction == 1 else "Benign",
+        "Benign": round(float(proba[0]), 4),
+        "Malignant": round(float(proba[1]), 4)
     }
-
-    logging.info(f"Breast cancer prediction: {result}")
     return result
 
-@app.post("/batch_predict_cancer")
-def batch_predict_cancer(data: CancerBatch):
-    inputs = [record.features for record in data.records]
-    input_data = np.array(inputs)
-    predictions = cancer_model.predict(input_data)
-    probas = cancer_model.predict_proba(input_data)
-
-    results = []
-    for i in range(len(predictions)):
-        results.append({
-            "prediction": "Benign" if predictions[i] == 1 else "Malignant",
-            "confidence": {
-                "Benign": round(probas[i][1], 4),
-                "Malignant": round(probas[i][0], 4)
-            }
-        })
-
-    logging.info(f"Batch cancer prediction done: {len(results)} records")
-    return {"results": results}
-
-# ================= Diabetes Endpoints =================
+# API Route: Diabetes Prediction
 @app.post("/predict_diabetes")
-def predict_diabetes(data: DiabetesFeatures):
-    input_data = np.array(data.features).reshape(1, -1)
-    prediction = diabetes_model.predict(input_data)[0]
-    proba = diabetes_model.predict_proba(input_data)[0]
+def predict_diabetes(data: InputFeatures):
+    features = np.array(data.features).reshape(1, -1)
+    prediction = diabetes_model.predict(features)[0]
+    proba = diabetes_model.predict_proba(features)[0]
 
     result = {
         "prediction": "Diabetic" if prediction == 1 else "Non-Diabetic",
-        "confidence": {
-            "Diabetic": round(proba[1], 4),
-            "Non-Diabetic": round(proba[0], 4)
-        }
+        "Diabetic": round(float(proba[1]), 4),
+        "Non_Diabetic": round(float(proba[0]), 4)
     }
-
-    logging.info(f"Diabetes prediction: {result}")
     return result
 
-@app.post("/batch_predict_diabetes")
-def batch_predict_diabetes(data: DiabetesBatch):
-    inputs = [record.features for record in data.records]
-    input_data = np.array(inputs)
-    predictions = diabetes_model.predict(input_data)
-    probas = diabetes_model.predict_proba(input_data)
+# Frontend: Home Page
+@app.get("/", response_class=HTMLResponse)
+def read_index(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
-    results = []
-    for i in range(len(predictions)):
-        results.append({
-            "prediction": "Diabetic" if predictions[i] == 1 else "Non-Diabetic",
-            "confidence": {
-                "Diabetic": round(probas[i][1], 4),
-                "Non-Diabetic": round(probas[i][0], 4)
-            }
-        })
+# Frontend: Input Page
+@app.get("/input", response_class=HTMLResponse)
+def read_input(request: Request):
+    return templates.TemplateResponse("input.html", {"request": request})
 
-    logging.info(f"Batch diabetes prediction done: {len(results)} records")
-    return {"results": results}
+# Frontend: Cancer Result Page
+@app.get("/result_cancer", response_class=HTMLResponse)
+def result_cancer(request: Request, prediction: str, Benign: float = 0.0, Malignant: float = 0.0):
+    return templates.TemplateResponse("result_cancer.html", {
+        "request": request,
+        "prediction": prediction,
+        "confidence": {
+            "Benign": Benign,
+            "Malignant": Malignant
+        }
+    })
+
+# Frontend: Diabetes Result Page
+@app.get("/result_diabetes", response_class=HTMLResponse)
+def result_diabetes(request: Request, prediction: str, Diabetic: float = 0.0, Non_Diabetic: float = 0.0):
+    return templates.TemplateResponse("result_diabetes.html", {
+        "request": request,
+        "prediction": prediction,
+        "confidence": {
+            "Diabetic": Diabetic,
+            "Non-Diabetic": Non_Diabetic
+        }
+    })
+# Frontend: Landing Page
+@app.get("/landing", response_class=HTMLResponse)
+def landing(request: Request):
+    return templates.TemplateResponse("landing.html", {"request": request})
+app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/templates", StaticFiles(directory="templates"), name="templates")

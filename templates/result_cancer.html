@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Cancer Prediction Result</title>
+</head>
+<body>
+    <h1>Breast Cancer Prediction Result</h1>
+    <img src="/static/images/syringe.png" alt="Syringe" style="width:200px;">
+    <p><strong>Prediction:</strong> {{ prediction }}</p>
+    <p><strong>Confidence:</strong></p>
+    <ul>
+        <li>Benign: {{ confidence['Benign'] }}</li>
+        <li>Malignant: {{ confidence['Malignant'] }}</li>
+    </ul>
+    <a href="/input"><button>Back</button></a>
+</body>
+</html>
