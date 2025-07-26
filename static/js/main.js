@@ -1,3 +1,3 @@
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("Landing page loaded.");
-});
+function redirectToInput(disease) {
+  window.location.href = `/input?disease=${disease}`;
+}

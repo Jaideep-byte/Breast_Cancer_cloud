@@ -1,57 +1,37 @@
-# main.py
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-import joblib
+import numpy as np
+import pickle
 
 app = FastAPI()
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-models = {
-    "Breast Cancer": joblib.load("models/breast_cancer_model.pkl"),
-    "Diabetes": joblib.load("models/diabetes_model.pkl")
-}
-
-features = {
-    "Breast Cancer": [
-        "Radius Mean", "Texture Mean", "Perimeter Mean", "Area Mean", "Smoothness Mean",
-        "Compactness Mean", "Concavity Mean", "Concave Points Mean", "Symmetry Mean", "Fractal Dimension Mean",
-        "Radius SE", "Texture SE", "Perimeter SE", "Area SE", "Smoothness SE",
-        "Compactness SE", "Concavity SE", "Concave Points SE", "Symmetry SE", "Fractal Dimension SE",
-        "Radius Worst", "Texture Worst", "Perimeter Worst", "Area Worst", "Smoothness Worst",
-        "Compactness Worst", "Concavity Worst", "Concave Points Worst", "Symmetry Worst", "Fractal Dimension Worst"
-    ],
-    "Diabetes": [
-        "Pregnancies", "Glucose", "Blood Pressure", "Skin Thickness", "Insulin",
-        "BMI", "Diabetes Pedigree Function", "Age"
-    ]
-}
+# Load models
+breast_cancer_model = pickle.load(open("breast_cancer_model.pkl", "rb"))
+diabetes_model = pickle.load(open("diabetes_model.pkl", "rb"))
 
 @app.get("/", response_class=HTMLResponse)
-async def index(request: Request):
+async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.get("/input", response_class=HTMLResponse)
-async def input_form(request: Request):
-    return templates.TemplateResponse("input.html", {"request": request, "features": features})
+async def input_form(request: Request, disease: str):
+    return templates.TemplateResponse("input.html", {"request": request, "disease": disease})
 
-@app.post("/predict", response_class=HTMLResponse)
-async def predict(request: Request, disease: str = Form(...), feature_values: str = Form(...)):
-    try:
-        model = models[disease]
-        input_values = [float(x) for x in feature_values.split(",")]
-        prediction = model.predict([input_values])[0]
-        result = "Positive" if prediction == 1 else "Negative"
-        return templates.TemplateResponse("result.html", {
-            "request": request,
-            "disease": disease,
-            "result": result
-        })
-    except Exception as e:
-        return templates.TemplateResponse("result.html", {
-            "request": request,
-            "disease": disease,
-            "result": f"Error: {str(e)}"
-        })
+@app.post("/predict_cancer", response_class=HTMLResponse)
+async def predict_cancer(request: Request, **kwargs):
+    features = [float(value) for value in kwargs.values()]
+    prediction = breast_cancer_model.predict([features])[0]
+    result = "Malignant" if prediction == 0 else "Benign"
+    return templates.TemplateResponse("result_cancer.html", {"request": request, "result": result})
+
+@app.post("/predict_diabetes", response_class=HTMLResponse)
+async def predict_diabetes(request: Request, **kwargs):
+    features = [float(value) for value in kwargs.values()]
+    prediction = diabetes_model.predict([features])[0]
+    result = "Diabetic" if prediction == 1 else "Non-Diabetic"
+    return templates.TemplateResponse("result_diabetes.html", {"request": request, "result": result})
