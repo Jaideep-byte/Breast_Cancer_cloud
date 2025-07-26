@@ -2,32 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Disease Predictor</title>
-    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
-    <script src="{{ url_for('static', path='js/input.js') }}" defer></script>
+    <title>Input Form</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script defer src="/static/js/script.js"></script>
 </head>
 <body>
-    <div class="form-container">
-        <h2>Disease Predictor</h2>
+    <div class="container">
+        <h1>Enter Medical Details</h1>
+        <form action="/predict" method="post" id="prediction-form">
+            <label for="disease">Select Disease:</label>
+            <select name="disease" id="disease">
+                <option value="Breast Cancer">Breast Cancer</option>
+                <option value="Diabetes">Diabetes</option>
+            </select>
 
-        <!-- Disease Selector -->
-        <label for="disease">Select Disease:</label>
-        <select id="disease" name="disease">
-            <option value="cancer">Breast Cancer</option>
-            <option value="diabetes">Diabetes</option>
-        </select>
-
-        <!-- Dynamic Disease Icon -->
-        <div class="image-preview">
-            <img id="disease-image" src="{{ url_for('static', path='images/syringe.png') }}" alt="Disease Icon" />
-        </div>
-
-        <!-- Prediction Form -->
-        <form id="prediction-form" method="post" action="/predict/cancer">
-            <div id="feature-inputs">
-                <!-- Dynamically inserted input fields -->
-            </div>
-            <input type="submit" value="Predict">
+            <div id="feature-inputs"></div>
+            <button type="submit" class="btn">Predict</button>
         </form>
     </div>
 </body>

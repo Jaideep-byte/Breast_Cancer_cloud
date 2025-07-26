@@ -1,19 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/static/style.css">
-    <title>Diabetes Prediction Result</title>
+    <title>Diabetes Result</title>
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <h1>Diabetes Prediction Result</h1>
-    <img src="/static/images/sugar.png" alt="Sugar" style="width:200px;">
-    <p><strong>Prediction:</strong> {{ prediction }}</p>
-    <p><strong>Confidence:</strong></p>
-    <ul>
-        <li>Diabetic: {{ confidence['Diabetic'] }}</li>
-        <li>Non-Diabetic: {{ confidence['Non-Diabetic'] }}</li>
-    </ul>
-    <a href="/input"><button>Back</button></a>
+    <div class="container">
+        <h1>Diabetes Prediction Result</h1>
+        <img src="/static/images/diabetes.png" alt="Diabetes" class="result-img">
+        <p><strong>Result:</strong> {{ result }}</p>
+        <a href="/input" class="btn">Test Another</a>
+    </div>
 </body>
 </html>
