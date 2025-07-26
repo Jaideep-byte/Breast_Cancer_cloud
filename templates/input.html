@@ -1,17 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Input - {{ disease }}</title>
-  <link rel="stylesheet" href="/static/css/style.css" />
-  <script src="/static/js/input.js"></script>
+  <title>Input Page</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/input.js"></script>
 </head>
-<body onload="renderInputs('{{ disease }}')">
-  <div class="container">
-    <h2>Enter details for {{ 'Breast Cancer' if disease == 'cancer' else 'Diabetes' }} Prediction</h2>
-    <form action="/predict_{{ 'cancer' if disease == 'cancer' else 'diabetes' }}" method="post">
-      <div id="form-fields"></div>
-      <button type="submit">Predict</button>
-    </form>
-  </div>
+<body>
+  <h1>Disease Prediction Input</h1>
+
+  <select id="disease-select" onchange="toggleForms()">
+    <option value="diabetes">Diabetes</option>
+    <option value="cancer">Breast Cancer</option>
+  </select>
+
+  <!-- Diabetes Form -->
+  <form id="diabetes-form" action="/predict_diabetes" method="post">
+    <h2>Diabetes Input</h2>
+    <input type="number" name="pregnancies" placeholder="Pregnancies" required>
+    <input type="number" name="glucose" placeholder="Glucose" required>
+    <input type="number" name="blood_pressure" placeholder="Blood Pressure" required>
+    <input type="number" name="skin_thickness" placeholder="Skin Thickness" required>
+    <input type="number" name="insulin" placeholder="Insulin" required>
+    <input type="number" name="bmi" placeholder="BMI" step="any" required>
+    <input type="number" name="diabetes_pedigree_function" placeholder="Diabetes Pedigree Function" step="any" required>
+    <input type="number" name="age" placeholder="Age" required>
+    <button type="submit">Predict</button>
+  </form>
+
+  <!-- Cancer Form -->
+  <form id="cancer-form" action="/predict_cancer" method="post" style="display:none;">
+    <h2>Breast Cancer Input</h2>
+    <div class="cancer-fields"></div>
+    <button type="submit">Predict</button>
+  </form>
+
+  <script>
+    const fields = [
+      "radius_mean", "texture_mean", "perimeter_mean", "area_mean", "smoothness_mean",
+      "compactness_mean", "concavity_mean", "concave_points_mean", "symmetry_mean", "fractal_dimension_mean",
+      "radius_se", "texture_se", "perimeter_se", "area_se", "smoothness_se",
+      "compactness_se", "concavity_se", "concave_points_se", "symmetry_se", "fractal_dimension_se",
+      "radius_worst", "texture_worst", "perimeter_worst", "area_worst", "smoothness_worst",
+      "compactness_worst", "concavity_worst", "concave_points_worst", "symmetry_worst", "fractal_dimension_worst"
+    ];
+    const container = document.querySelector('.cancer-fields');
+    fields.forEach(name => {
+      const label = document.createElement('label');
+      label.innerText = name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.name = name;
+      input.step = 'any';
+      input.required = true;
+      container.appendChild(label);
+      container.appendChild(input);
+    });
+
+    function toggleForms() {
+      const disease = document.getElementById("disease-select").value;
+      document.getElementById("diabetes-form").style.display = disease === "diabetes" ? "block" : "none";
+      document.getElementById("cancer-form").style.display = disease === "cancer" ? "block" : "none";
+    }
+  </script>
 </body>
 </html>

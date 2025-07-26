@@ -2,15 +2,12 @@
 <html>
 <head>
   <title>Diabetes Result</title>
-  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <div class="container">
-    <h2>Diabetes Prediction</h2>
-    <p>The model predicts: <strong>{{ result }}</strong></p>
-    <div class="image-center">
-      <img src="/static/images/sugar.png" alt="Diabetes Image" width="200" />
-    </div>
-  </div>
+  <h1>Diabetes Prediction</h1>
+  <p><strong>Result:</strong> {{ result }}</p>
+  <p><strong>Confidence:</strong> {{ confidence }}%</p>
+  <img src="/static/sugar.png" alt="Diabetes Image" style="width: 300px;">
 </body>
 </html>
