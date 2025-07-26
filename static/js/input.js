@@ -1,42 +1,49 @@
-const breastCancerFeatures = [
-    "Radius Mean", "Texture Mean", "Perimeter Mean", "Area Mean", "Smoothness Mean",
-    "Compactness Mean", "Concavity Mean", "Concave Points Mean", "Symmetry Mean", "Fractal Dimension Mean",
-    "Radius SE", "Texture SE", "Perimeter SE", "Area SE", "Smoothness SE",
-    "Compactness SE", "Concavity SE", "Concave Points SE", "Symmetry SE", "Fractal Dimension SE",
-    "Radius Worst", "Texture Worst", "Perimeter Worst", "Area Worst", "Smoothness Worst",
-    "Compactness Worst", "Concavity Worst", "Concave Points Worst", "Symmetry Worst", "Fractal Dimension Worst"
+const breastCancerFields = [
+  "Radius Mean", "Texture Mean", "Perimeter Mean", "Area Mean", "Smoothness Mean",
+  "Compactness Mean", "Concavity Mean", "Concave Points Mean", "Symmetry Mean", "Fractal Dimension Mean",
+  "Radius SE", "Texture SE", "Perimeter SE", "Area SE", "Smoothness SE",
+  "Compactness SE", "Concavity SE", "Concave Points SE", "Symmetry SE", "Fractal Dimension SE",
+  "Radius Worst", "Texture Worst", "Perimeter Worst", "Area Worst", "Smoothness Worst",
+  "Compactness Worst", "Concavity Worst", "Concave Points Worst", "Symmetry Worst", "Fractal Dimension Worst"
 ];
 
-const diabetesFeatures = [
-    "Pregnancies", "Glucose", "Blood Pressure", "Skin Thickness",
-    "Insulin", "BMI", "Diabetes Pedigree", "Age"
+const diabetesFields = [
+  "Pregnancies", "Glucose", "Blood Pressure", "Skin Thickness", "Insulin",
+  "BMI", "Diabetes Pedigree Function", "Age"
 ];
 
-function toggleDisease() {
-    const disease = document.getElementById("disease").value;
-    const fieldsContainer = document.getElementById("form-fields");
-    const image = document.getElementById("disease-img");
+function updateFields() {
+  const disease = document.getElementById("disease").value;
+  const container = document.getElementById("feature-fields");
+  const image = document.getElementById("disease-img");
+  container.innerHTML = "";
 
-    fieldsContainer.innerHTML = "";
+  let fields = [];
+  if (disease === "Breast Cancer") {
+    fields = breastCancerFields;
+    image.src = "/static/syringe.png";
+  } else if (disease === "Diabetes") {
+    fields = diabetesFields;
+    image.src = "/static/sugar.png";
+  }
 
-    const features = disease === "Breast Cancer" ? breastCancerFeatures : diabetesFeatures;
-    image.src = disease === "Breast Cancer" ? "/static/syringe.png" : "/static/sugar.png";
-
-    features.forEach((name, i) => {
-        const label = document.createElement("label");
-        label.textContent = `${name}:`;
-        label.setAttribute("for", `feature_${i}`);
-
-        const input = document.createElement("input");
-        input.type = "number";
-        input.step = "any";
-        input.name = `feature_${i}`;
-        input.id = `feature_${i}`;
-        input.required = true;
-
-        fieldsContainer.appendChild(label);
-        fieldsContainer.appendChild(input);
-    });
+  fields.forEach((label, i) => {
+    const div = document.createElement("div");
+    div.className = "input-group";
+    div.innerHTML = `
+      <label>${label}:</label>
+      <input type="number" step="any" id="field_${i}" required>
+    `;
+    container.appendChild(div);
+  });
 }
 
-document.addEventListener("DOMContentLoaded", toggleDisease);
+document.addEventListener("DOMContentLoaded", () => {
+  updateFields();
+
+  document.querySelector("form").addEventListener("submit", function (e) {
+    const inputs = document.querySelectorAll("#feature-fields input");
+    const values = Array.from(inputs).map(input => input.value.trim());
+    document.getElementById("feature_values").value = values.join(",");
+  });
+});

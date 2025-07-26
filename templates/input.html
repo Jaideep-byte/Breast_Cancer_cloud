@@ -2,24 +2,23 @@
 <html>
 <head>
     <title>Enter Test Details</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/styles.css">
     <script src="/static/input.js" defer></script>
 </head>
 <body>
     <div class="container">
         <h1>Enter Test Details</h1>
-        <form method="post" action="/predict" id="diagnosisForm">
+        <form method="post" action="/predict">
             <label for="disease">Select Disease:</label>
-            <select name="disease" id="disease" onchange="toggleDisease()">
+            <select id="disease" name="disease" onchange="updateFields()">
                 <option value="Breast Cancer">Breast Cancer</option>
                 <option value="Diabetes">Diabetes</option>
             </select>
-            <div id="image-container">
-                <img src="/static/syringe.png" id="disease-img" alt="Disease image" class="icon">
-            </div>
+            <img id="disease-img" src="/static/syringe.png" class="disease-icon" alt="disease image"><br><br>
 
-            <div id="form-fields"></div>
+            <div id="feature-fields"></div>
 
+            <input type="hidden" name="feature_values" id="feature_values">
             <button type="submit" class="btn">Predict</button>
         </form>
     </div>

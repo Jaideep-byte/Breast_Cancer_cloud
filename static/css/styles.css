@@ -1,60 +1,65 @@
 body {
-    font-family: Arial, sans-serif;
-    background: #f3f3f3;
-    margin: 0;
-    padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f0f4f8;
+  text-align: center;
+  padding: 20px;
 }
 
 .container {
-    max-width: 700px;
-    margin: auto;
-    background: white;
-    padding: 30px;
-    margin-top: 50px;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-}
-
-.center {
-    text-align: center;
+  max-width: 700px;
+  margin: auto;
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
 }
 
 h1 {
-    color: #222;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-label {
-    font-weight: bold;
-}
-
-input[type="number"] {
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+  color: #333;
+  margin-bottom: 20px;
 }
 
 .btn {
-    padding: 10px 20px;
-    background: #007bff;
-    color: white;
-    text-decoration: none;
-    text-align: center;
-    border-radius: 8px;
-    display: inline-block;
-    margin-top: 20px;
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 12px 25px;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-top: 20px;
+  transition: 0.3s;
 }
 
 .btn:hover {
-    background: #0056b3;
+  background-color: #0056b3;
 }
 
-.icon {
-    width: 80px;
-    margin-top: 10px;
+.input-group {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.input-group input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+}
+
+label {
+  width: 45%;
+  text-align: left;
+  font-weight: bold;
+}
+
+.disease-icon, .result-img, .banner-img {
+  max-width: 150px;
+  margin: 20px auto;
+}
+.result {
+  background-color: #e9f5ff;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
 }
