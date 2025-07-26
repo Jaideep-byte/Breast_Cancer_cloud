@@ -10,7 +10,7 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-cancer_model = joblib.load("models/cancer_model.pkl")
+cancer_model = joblib.load("models/breast_cancer_model.pkl")
 diabetes_model = joblib.load("models/diabetes_model.pkl")
 
 @app.get("/", response_class=HTMLResponse)

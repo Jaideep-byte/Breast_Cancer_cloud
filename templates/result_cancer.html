@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Breast Cancer Result</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <meta charset="UTF-8">
+    <title>Cancer Result</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
     <div class="container">
         <h1>Breast Cancer Prediction Result</h1>
-        <img src="/static/images/breast_cancer.png" alt="Cancer" class="result-img">
         <p><strong>Result:</strong> {{ result }}</p>
-        <p><strong>Confidence:</strong> {{ confidence }}</p>
-        <a href="/input" class="btn">Test Another</a>
+        <img src="/static/images/syringe.png" alt="Cancer Image" class="result-image">
+        <a href="/input" class="btn">Test Again</a>
     </div>
 </body>
 </html>

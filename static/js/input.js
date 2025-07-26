@@ -15,6 +15,17 @@ const diabetesFeatures = [
     "BMI", "Diabetes Pedigree Function", "Age"
 ];
 
+function updateImage() {
+    const select = document.getElementById("disease");
+    const image = document.getElementById("disease-image");
+
+    if (select.value === "cancer") {
+        image.src = "/static/images/syringe.png";
+    } else if (select.value === "diabetes") {
+        image.src = "/static/images/sugar_cube.png";
+    }
+}
+
 function createInputs(features) {
     featureInputs.innerHTML = '';
     features.forEach((feature, index) => {
