@@ -1,25 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Enter Your Details</title>
-    <link rel="stylesheet" href="/static/styles.css">
-    <script src="/static/script.js" defer></script>
+    <title>Enter Test Details</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/input.js" defer></script>
 </head>
 <body>
     <div class="container">
         <h1>Enter Test Details</h1>
-        <form action="/predict" method="post">
+        <form method="post" action="/predict" id="diagnosisForm">
             <label for="disease">Select Disease:</label>
-            <select name="disease" id="disease" onchange="updateImage()">
-                <option value="cancer">Breast Cancer</option>
-                <option value="diabetes">Diabetes</option>
+            <select name="disease" id="disease" onchange="toggleDisease()">
+                <option value="Breast Cancer">Breast Cancer</option>
+                <option value="Diabetes">Diabetes</option>
             </select>
+            <div id="image-container">
+                <img src="/static/syringe.png" id="disease-img" alt="Disease image" class="icon">
+            </div>
 
-            <img id="disease-image" src="/static/images/syringe.png" alt="disease image" class="disease-image">
-
-            <label for="features">Enter Features (comma-separated):</label>
-            <textarea name="features" required placeholder="e.g. 17.99,10.38,122.8,..."></textarea>
+            <div id="form-fields"></div>
 
             <button type="submit" class="btn">Predict</button>
         </form>
