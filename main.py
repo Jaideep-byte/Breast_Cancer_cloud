@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import numpy as np
-import pickle
+import joblib
 
 app = FastAPI()
 
@@ -11,8 +11,8 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 # Load models
-breast_cancer_model = pickle.load(open("breast_cancer_model.pkl", "rb"))
-diabetes_model = pickle.load(open("diabetes_model.pkl", "rb"))
+breast_cancer_model = joblib.load("breast_cancer_model.pkl")
+diabetes_model = joblib.load("diabetes_model.pkl")
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
