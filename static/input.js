@@ -1,7 +1,7 @@
-const featureContainer = document.getElementById("feature-container");
 const diseaseSelect = document.getElementById("disease");
-const image = document.getElementById("disease-image");
-const hiddenDisease = document.getElementById("hidden-disease");
+const featureContainer = document.getElementById("feature-container");
+const diseaseImage = document.getElementById("disease-image");
+const hiddenDiseaseInput = document.getElementById("hidden-disease");
 
 const cancerFeatures = [
   "Radius Mean", "Texture Mean", "Perimeter Mean", "Area Mean", "Smoothness Mean",
@@ -13,34 +13,47 @@ const cancerFeatures = [
 ];
 
 const diabetesFeatures = [
-  "Pregnancies", "Glucose", "Blood Pressure", "Skin Thickness", "Insulin",
-  "BMI", "Diabetes Pedigree Function", "Age"
+  "Pregnancies", "Glucose", "Blood Pressure", "Skin Thickness",
+  "Insulin", "BMI", "Diabetes Pedigree Function", "Age"
 ];
 
 diseaseSelect.addEventListener("change", () => {
-  const disease = diseaseSelect.value;
-  hiddenDisease.value = disease;
-  featureContainer.innerHTML = "";
+  const selectedDisease = diseaseSelect.value;
+  hiddenDiseaseInput.value = selectedDisease;
 
-  let features = [];
-  if (disease === "cancer") {
-    image.src = "/static/syringe.png";
-    features = cancerFeatures;
-  } else if (disease === "diabetes") {
-    image.src = "/static/sugar.png";
-    features = diabetesFeatures;
+  // Change image
+  if (selectedDisease === "cancer") {
+    diseaseImage.src = "/static/syringe.png";
+    generateInputs(cancerFeatures);
+  } else if (selectedDisease === "diabetes") {
+    diseaseImage.src = "/static/sugar.png";
+    generateInputs(diabetesFeatures);
   } else {
-    image.src = "/static/heart_hands.png";
+    featureContainer.innerHTML = "";
+    diseaseImage.src = "/static/heart_hands.png";
   }
+});
 
+function generateInputs(features) {
+  featureContainer.innerHTML = "";
   features.forEach((feature, index) => {
     const div = document.createElement("div");
     div.className = "input-group";
-    div.innerHTML = `
-      <label for="feature_${index}">${feature}</label>
-      <input type="number" step="any" name="feature_${index}" required />
-    `;
+
+    const label = document.createElement("label");
+    label.innerText = feature;
+    label.setAttribute("for", `feature_${index}`);
+
+    const input = document.createElement("input");
+    input.type = "number";
+    input.step = "any";
+    input.name = `feature_${index}`;
+    input.id = `feature_${index}`;
+    input.required = true;
+
+    div.appendChild(label);
+    div.appendChild(input);
     featureContainer.appendChild(div);
   });
-});
-// Trigger change event on page load to set initial state
+}
+// Initialize with default disease

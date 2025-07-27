@@ -1,32 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Disease Prediction</title>
+  <meta charset="UTF-8">
+  <title>Input Disease Data</title>
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Disease Prediction System</h1>
+    <h1>Disease Diagnosis Input</h1>
 
     <div class="select-disease">
-      <label for="disease"><strong>Select Disease:</strong></label>
+      <label for="disease">Select Disease:</label>
       <select id="disease" name="disease">
-        <option value="">-- Select --</option>
+        <option value="">--Select--</option>
         <option value="cancer">Breast Cancer</option>
         <option value="diabetes">Diabetes</option>
       </select>
     </div>
 
-    <img id="disease-image" src="/static/heart_hands.png" alt="Disease Image" class="disease-image" />
+    <img id="disease-image" src="/static/heart_hands.png" class="disease-image" alt="Disease Icon" />
 
-    <form method="post" action="/predict" id="prediction-form">
-      <div id="feature-container" class="input-grid">
-        <!-- Inputs will load here dynamically -->
-      </div>
+    <form method="post" action="/predict">
       <input type="hidden" name="disease" id="hidden-disease" />
-      <button type="submit" class="predict-button">Start Diagnosis</button>
+
+      <div class="input-grid" id="feature-container">
+        <!-- Dynamic input fields are injected here -->
+      </div>
+
+      <button type="submit" class="predict-button">Predict</button>
     </form>
   </div>
 
