@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Diabetes Prediction</title>
+  <title>Diabetes Result</title>
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <div class="container result">
-    <h2>Diabetes Prediction Result</h2>
-    <img src="/static/sugar.png" alt="Diabetes" class="result-image" />
-    <p><strong>Prediction:</strong> {{ prediction }}</p>
-    <a href="/" class="back-button">Back</a>
+  <div class="container">
+    <h1>Diabetes Prediction Result</h1>
+    <img src="/static/sugar.png" class="disease-image" />
+    <p><strong>Prediction:</strong> {{ result }}</p>
+    <a href="/" class="predict-button">Back to Home</a>
   </div>
 </body>
 </html>

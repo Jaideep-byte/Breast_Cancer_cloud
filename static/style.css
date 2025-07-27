@@ -1,91 +1,71 @@
 body {
-  background: linear-gradient(to right, #f0f4f8, #d9e2ec);
-  font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  text-align: center;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #f8f9fa, #e0eafc);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  background-color: white;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  margin-top: 50px;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 800px;
+  text-align: center;
 }
 
 h1 {
+  color: #333;
   margin-bottom: 20px;
-  font-size: 2em;
 }
 
 .select-disease {
-  margin-bottom: 20px;
-}
-
-.disease-image {
-  width: 120px;
-  height: auto;
-  margin: 20px 0;
+  margin: 15px 0;
 }
 
 .input-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 15px;
-  justify-content: center;
-  margin-bottom: 30px;
-}
-
-.input-grid label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: bold;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
   text-align: left;
 }
 
-.input-grid input {
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.input-group input {
   width: 100%;
   padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  border: 1px solid #aaa;
+  border-radius: 8px;
 }
 
 .predict-button {
+  margin-top: 20px;
+  padding: 12px 25px;
   background-color: #007bff;
-  color: white;
-  padding: 12px 24px;
-  font-size: 1em;
   border: none;
+  color: white;
   border-radius: 8px;
   cursor: pointer;
+  font-size: 16px;
 }
 
 .predict-button:hover {
   background-color: #0056b3;
 }
 
-.result {
-  text-align: center;
-}
-
-.result-image {
-  width: 120px;
-  margin: 20px auto;
-}
-
-.back-button {
+.disease-image {
+  width: 180px;
+  height: auto;
   margin-top: 20px;
-  display: inline-block;
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 6px;
-  text-decoration: none;
-}
-
-.back-button:hover {
-  background-color: #0056b3;
 }
