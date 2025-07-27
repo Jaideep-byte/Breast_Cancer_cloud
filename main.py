@@ -1,11 +1,14 @@
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-import joblib
 import numpy as np
+import joblib
 
+# Initialize FastAPI app
 app = FastAPI()
+
+# Set up templates and static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
@@ -13,43 +16,58 @@ templates = Jinja2Templates(directory="templates")
 breast_cancer_model = joblib.load("breast_cancer_model.pkl")
 diabetes_model = joblib.load("diabetes_model.pkl")
 
+# Home page
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
+# Input form page
 @app.get("/input", response_class=HTMLResponse)
 async def input_page(request: Request):
     return templates.TemplateResponse("input.html", {"request": request})
 
+# Prediction handler
 @app.post("/predict", response_class=HTMLResponse)
-async def predict(request: Request, disease: str = Form(...), **kwargs):
-    try:
-        # Convert all form values to float (excluding 'disease')
-        features = [float(value) for key, value in kwargs.items()]
+async def predict(request: Request):
+    form = await request.form()
+    disease = form.get("disease")
 
-        if disease == "cancer":
-            pred = breast_cancer_model.predict([features])[0]
-            prob = breast_cancer_model.predict_proba([features])[0]
-            result = "Malignant" if pred == 0 else "Benign"
-            confidence = round(max(prob) * 100, 2)
-            return templates.TemplateResponse("result_cancer.html", {
-                "request": request,
-                "result": result,
-                "confidence": confidence
-            })
+    # Collect all feature values
+    features = []
+    for key in sorted(form.keys()):
+        if key.startswith("feature"):
+            try:
+                features.append(float(form[key]))
+            except:
+                features.append(0.0)
 
-        elif disease == "diabetes":
-            pred = diabetes_model.predict([features])[0]
-            prob = diabetes_model.predict_proba([features])[0]
-            result = "Diabetic" if pred == 1 else "Not Diabetic"
-            confidence = round(max(prob) * 100, 2)
-            return templates.TemplateResponse("result_diabetes.html", {
-                "request": request,
-                "result": result,
-                "confidence": confidence
-            })
-        else:
-            return templates.TemplateResponse("input.html", {"request": request, "error": "Invalid disease selected."})
+    input_data = np.array([features])
 
-    except Exception as e:
-        return templates.TemplateResponse("input.html", {"request": request, "error": str(e)})
+    # Breast Cancer Prediction
+    if disease == "cancer":
+        prediction = breast_cancer_model.predict(input_data)[0]
+        confidence = round(np.max(breast_cancer_model.predict_proba(input_data)) * 100, 2)
+        result = "Malignant" if prediction == 1 else "Benign"
+        return templates.TemplateResponse("result_cancer.html", {
+            "request": request,
+            "result": result,
+            "confidence": confidence
+        })
+
+    # Diabetes Prediction
+    elif disease == "diabetes":
+        prediction = diabetes_model.predict(input_data)[0]
+        confidence = round(np.max(diabetes_model.predict_proba(input_data)) * 100, 2)
+        result = "Diabetic" if prediction == 1 else "Not Diabetic"
+        return templates.TemplateResponse("result_diabetes.html", {
+            "request": request,
+            "result": result,
+            "confidence": confidence
+        })
+
+    # Invalid disease selected
+    else:
+        return templates.TemplateResponse("input.html", {
+            "request": request,
+            "error": "Please select a valid disease."
+        })
