@@ -1,75 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Disease Input</title>
-  <link rel="stylesheet" href="/static/style.css" />
-  <script defer src="/static/input.js"></script>
-</head>
 <body>
   <div class="container">
-    <h1>Enter Details for Prediction</h1>
-    <select id="diseaseSelect" onchange="toggleForm()">
-      <option value="cancer">Breast Cancer</option>
-      <option value="diabetes">Diabetes</option>
-    </select>
+    <h1>Disease Prediction</h1>
 
-    <!-- Breast Cancer Form -->
-    <form id="cancerForm" method="post" action="/predict/cancer">
-      <div class="input-grid">
-        <div class="input-field"><label>Radius Mean</label><input type="number" name="radius_mean" required></div>
-        <div class="input-field"><label>Texture Mean</label><input type="number" name="texture_mean" required></div>
-        <div class="input-field"><label>Perimeter Mean</label><input type="number" name="perimeter_mean" required></div>
-        <div class="input-field"><label>Area Mean</label><input type="number" name="area_mean" required></div>
-        <div class="input-field"><label>Smoothness Mean</label><input type="number" name="smoothness_mean" required></div>
-        <div class="input-field"><label>Compactness Mean</label><input type="number" name="compactness_mean" required></div>
-        <div class="input-field"><label>Concavity Mean</label><input type="number" name="concavity_mean" required></div>
-        <div class="input-field"><label>Concave Points Mean</label><input type="number" name="concave_points_mean" required></div>
-        <div class="input-field"><label>Symmetry Mean</label><input type="number" name="symmetry_mean" required></div>
-        <div class="input-field"><label>Fractal Dimension Mean</label><input type="number" name="fractal_dimension_mean" required></div>
+    <div class="select-disease">
+      <select id="disease" name="disease">
+        <option value="">Select Disease</option>
+        <option value="cancer">Breast Cancer</option>
+        <option value="diabetes">Diabetes</option>
+      </select>
+      <img id="disease-image" src="/static/heart_hands.png" alt="Welcome Image" />
+    </div>
 
-        <div class="input-field"><label>Radius SE</label><input type="number" name="radius_se" required></div>
-        <div class="input-field"><label>Texture SE</label><input type="number" name="texture_se" required></div>
-        <div class="input-field"><label>Perimeter SE</label><input type="number" name="perimeter_se" required></div>
-        <div class="input-field"><label>Area SE</label><input type="number" name="area_se" required></div>
-        <div class="input-field"><label>Smoothness SE</label><input type="number" name="smoothness_se" required></div>
-        <div class="input-field"><label>Compactness SE</label><input type="number" name="compactness_se" required></div>
-        <div class="input-field"><label>Concavity SE</label><input type="number" name="concavity_se" required></div>
-        <div class="input-field"><label>Concave Points SE</label><input type="number" name="concave_points_se" required></div>
-        <div class="input-field"><label>Symmetry SE</label><input type="number" name="symmetry_se" required></div>
-        <div class="input-field"><label>Fractal Dimension SE</label><input type="number" name="fractal_dimension_se" required></div>
-
-        <div class="input-field"><label>Radius Worst</label><input type="number" name="radius_worst" required></div>
-        <div class="input-field"><label>Texture Worst</label><input type="number" name="texture_worst" required></div>
-        <div class="input-field"><label>Perimeter Worst</label><input type="number" name="perimeter_worst" required></div>
-        <div class="input-field"><label>Area Worst</label><input type="number" name="area_worst" required></div>
-        <div class="input-field"><label>Smoothness Worst</label><input type="number" name="smoothness_worst" required></div>
-        <div class="input-field"><label>Compactness Worst</label><input type="number" name="compactness_worst" required></div>
-        <div class="input-field"><label>Concavity Worst</label><input type="number" name="concavity_worst" required></div>
-        <div class="input-field"><label>Concave Points Worst</label><input type="number" name="concave_points_worst" required></div>
-        <div class="input-field"><label>Symmetry Worst</label><input type="number" name="symmetry_worst" required></div>
-        <div class="input-field"><label>Fractal Dimension Worst</label><input type="number" name="fractal_dimension_worst" required></div>
+    <form method="post" action="/predict">
+      <div id="feature-container" class="input-grid">
+        <!-- JavaScript inserts input fields here -->
       </div>
-      <input type="submit" value="Predict">
+      <button type="submit">Predict</button>
     </form>
-
-    <!-- Diabetes Form -->
-    <form id="diabetesForm" method="post" action="/predict/diabetes" style="display: none;">
-      <div class="input-grid">
-        <div class="input-field"><label>Pregnancies</label><input type="number" name="pregnancies" required></div>
-        <div class="input-field"><label>Glucose</label><input type="number" name="glucose" required></div>
-        <div class="input-field"><label>Blood Pressure</label><input type="number" name="bloodpressure" required></div>
-        <div class="input-field"><label>Skin Thickness</label><input type="number" name="skinthickness" required></div>
-        <div class="input-field"><label>Insulin</label><input type="number" name="insulin" required></div>
-        <div class="input-field"><label>BMI</label><input type="number" step="0.1" name="bmi" required></div>
-        <div class="input-field"><label>Diabetes Pedigree Function</label><input type="number" step="0.01" name="dpf" required></div>
-        <div class="input-field"><label>Age</label><input type="number" name="age" required></div>
-      </div>
-      <input type="submit" value="Predict">
-    </form>
-
-    <img id="diseaseImage" src="/static/syringe.png" alt="disease image" />
   </div>
+
+  <script src="/static/input.js"></script>
 </body>
-</html>
