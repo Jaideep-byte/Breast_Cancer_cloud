@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Diabetes Prediction Result</title>
+  <title>Diabetes Prediction</title>
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>Diabetes Prediction</h1>
-    <img src="/static/sugar.png" alt="Diabetes Image" />
-    <p class="result-text">Prediction Result: <strong>{{ prediction }}</strong></p>
-    <a href="/" class="back-button">Back to Home</a>
+  <div class="container result">
+    <h2>Diabetes Prediction Result</h2>
+    <img src="/static/sugar.png" alt="Diabetes" class="result-image" />
+    <p><strong>Prediction:</strong> {{ prediction }}</p>
+    <a href="/" class="back-button">Back</a>
   </div>
 </body>
 </html>

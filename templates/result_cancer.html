@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Breast Cancer Prediction Result</title>
+  <title>Breast Cancer Prediction</title>
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>Breast Cancer Prediction</h1>
-    <img src="/static/syringe.png" alt="Cancer Image" />
-    <p class="result-text">Prediction Result: <strong>{{ prediction }}</strong></p>
-    <a href="/" class="back-button">Back to Home</a>
+  <div class="container result">
+    <h2>Breast Cancer Prediction Result</h2>
+    <img src="/static/syringe.png" alt="Cancer" class="result-image" />
+    <p><strong>Prediction:</strong> {{ prediction }}</p>
+    <a href="/" class="back-button">Back</a>
   </div>
 </body>
 </html>
