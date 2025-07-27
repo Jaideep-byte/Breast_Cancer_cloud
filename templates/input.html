@@ -21,11 +21,12 @@
 
     <img id="disease-image" src="/static/heart_hands.png" alt="Disease Image" class="disease-image" />
 
-    <form method="post" action="/predict">
+    <form method="post" action="/predict" id="prediction-form">
       <div id="feature-container" class="input-grid">
-        <!-- Inputs will load here -->
+        <!-- Inputs will load here dynamically -->
       </div>
-      <button type="submit" class="predict-button">Predict</button>
+      <input type="hidden" name="disease" id="hidden-disease" />
+      <button type="submit" class="predict-button">Start Diagnosis</button>
     </form>
   </div>
 
