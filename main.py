@@ -1,57 +1,66 @@
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 import joblib
+import os
 
 app = FastAPI()
 
-# Load models
-breast_cancer_model = joblib.load("breast_cancer_model.pkl")
-diabetes_model = joblib.load("diabetes_model.pkl")
-
-# Mount static and template files
+# Mount static and template directories
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+# Load models
+cancer_model = joblib.load("breast_cancer_model.pkl")
+diabetes_model = joblib.load("diabetes_model.pkl")
+
 @app.get("/", response_class=HTMLResponse)
-def read_root(request: Request):
+async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-@app.get("/input", response_class=HTMLResponse)
-def input_page(request: Request):
-    return templates.TemplateResponse("input.html", {"request": request})
-
 @app.post("/predict", response_class=HTMLResponse)
-async def predict(request: Request, disease: str = Form(...)):
-    form_data = await request.form()
-    
-    features = []
-    for key, value in form_data.items():
-        if key != "disease":
-            try:
-                features.append(float(value))
-            except ValueError:
-                features.append(0.0)  # fallback if input is bad
+async def predict(request: Request, disease: str = Form(...), **kwargs):
+    if disease == "diabetes":
+        try:
+            input_data = [
+                float(kwargs['Pregnancies']),
+                float(kwargs['Glucose']),
+                float(kwargs['BloodPressure']),
+                float(kwargs['SkinThickness']),
+                float(kwargs['Insulin']),
+                float(kwargs['BMI']),
+                float(kwargs['DiabetesPedigreeFunction']),
+                float(kwargs['Age'])
+            ]
+        except KeyError as e:
+            raise HTTPException(status_code=400, detail=f"Missing input: {e}")
 
-    if disease == "cancer":
-        prediction = breast_cancer_model.predict([features])[0]
-        result = "Malignant" if prediction == 1 else "Benign"
-        image_path = "/static/syringe.png"
-        return templates.TemplateResponse("result_cancer.html", {
-            "request": request,
-            "result": result,
-            "image_path": image_path
-        })
+        prediction = diabetes_model.predict([input_data])[0]
+        confidence = diabetes_model.predict_proba([input_data])[0][prediction]
 
-    elif disease == "diabetes":
-        prediction = diabetes_model.predict([features])[0]
         result = "Positive for Diabetes" if prediction == 1 else "Negative for Diabetes"
-        image_path = "/static/sugar.png"
         return templates.TemplateResponse("result_diabetes.html", {
             "request": request,
             "result": result,
-            "image_path": image_path
+            "confidence": f"{confidence * 100:.2f}%"
         })
 
-    return templates.TemplateResponse("index.html", {"request": request})
+    elif disease == "cancer":
+        try:
+            input_data = [float(kwargs[f"feature{i+1}"]) for i in range(30)]
+        except KeyError as e:
+            raise HTTPException(status_code=400, detail=f"Missing input: {e}")
+
+        prediction = cancer_model.predict([input_data])[0]
+        confidence = cancer_model.predict_proba([input_data])[0][prediction]
+
+        result = "Malignant (Cancerous)" if prediction == 1 else "Benign (Non-Cancerous)"
+        return templates.TemplateResponse("result_cancer.html", {
+            "request": request,
+            "result": result,
+            "confidence": f"{confidence * 100:.2f}%"
+        })
+
+    else:
+        raise HTTPException(status_code=400, detail="Invalid disease type")
