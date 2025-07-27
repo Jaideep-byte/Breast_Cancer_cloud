@@ -2,8 +2,8 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-import numpy as np
 import joblib
+import numpy as np
 
 app = FastAPI()
 
@@ -11,18 +11,21 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 # Load models
-breast_cancer_model = joblib.load("breast_cancer_model.pkl")
 diabetes_model = joblib.load("diabetes_model.pkl")
+cancer_model = joblib.load("breast_cancer_model.pkl")
+
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
+
 @app.get("/input", response_class=HTMLResponse)
-async def input_page(request: Request):
+async def input_form(request: Request):
     return templates.TemplateResponse("input.html", {"request": request})
 
-@app.post("/predict_diabetes", response_class=HTMLResponse)
+
+@app.post("/predict/diabetes", response_class=HTMLResponse)
 async def predict_diabetes(
     request: Request,
     pregnancies: float = Form(...),
@@ -32,20 +35,16 @@ async def predict_diabetes(
     insulin: float = Form(...),
     bmi: float = Form(...),
     diabetes_pedigree_function: float = Form(...),
-    age: float = Form(...)
+    age: float = Form(...),
 ):
-    data = np.array([[pregnancies, glucose, blood_pressure, skin_thickness,
-                      insulin, bmi, diabetes_pedigree_function, age]])
-    prediction = diabetes_model.predict(data)[0]
-    confidence = max(diabetes_model.predict_proba(data)[0])
+    input_data = np.array([[pregnancies, glucose, blood_pressure, skin_thickness,
+                            insulin, bmi, diabetes_pedigree_function, age]])
+    prediction = diabetes_model.predict(input_data)[0]
     result = "Diabetic" if prediction == 1 else "Not Diabetic"
-    return templates.TemplateResponse("result_diabetes.html", {
-        "request": request,
-        "result": result,
-        "confidence": round(confidence * 100, 2)
-    })
+    return templates.TemplateResponse("result_diabetes.html", {"request": request, "prediction": result})
 
-@app.post("/predict_cancer", response_class=HTMLResponse)
+
+@app.post("/predict/cancer", response_class=HTMLResponse)
 async def predict_cancer(
     request: Request,
     radius_mean: float = Form(...),
@@ -77,22 +76,14 @@ async def predict_cancer(
     concavity_worst: float = Form(...),
     concave_points_worst: float = Form(...),
     symmetry_worst: float = Form(...),
-    fractal_dimension_worst: float = Form(...)
+    fractal_dimension_worst: float = Form(...),
 ):
-    features = [
-        radius_mean, texture_mean, perimeter_mean, area_mean, smoothness_mean,
-        compactness_mean, concavity_mean, concave_points_mean, symmetry_mean, fractal_dimension_mean,
-        radius_se, texture_se, perimeter_se, area_se, smoothness_se,
-        compactness_se, concavity_se, concave_points_se, symmetry_se, fractal_dimension_se,
-        radius_worst, texture_worst, perimeter_worst, area_worst, smoothness_worst,
-        compactness_worst, concavity_worst, concave_points_worst, symmetry_worst, fractal_dimension_worst
-    ]
-    input_data = np.array([features])
-    prediction = breast_cancer_model.predict(input_data)[0]
-    confidence = max(breast_cancer_model.predict_proba(input_data)[0])
-    result = "Malignant" if prediction == 0 else "Benign"
-    return templates.TemplateResponse("result_cancer.html", {
-        "request": request,
-        "result": result,
-        "confidence": round(confidence * 100, 2)
-    })
+    input_data = np.array([[radius_mean, texture_mean, perimeter_mean, area_mean, smoothness_mean,
+                            compactness_mean, concavity_mean, concave_points_mean, symmetry_mean, fractal_dimension_mean,
+                            radius_se, texture_se, perimeter_se, area_se, smoothness_se,
+                            compactness_se, concavity_se, concave_points_se, symmetry_se, fractal_dimension_se,
+                            radius_worst, texture_worst, perimeter_worst, area_worst, smoothness_worst,
+                            compactness_worst, concavity_worst, concave_points_worst, symmetry_worst, fractal_dimension_worst]])
+    prediction = cancer_model.predict(input_data)[0]
+    result = "Malignant (Cancerous)" if prediction == 0 else "Benign (Non-Cancerous)"
+    return templates.TemplateResponse("result_cancer.html", {"request": request, "prediction": result})

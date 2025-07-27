@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Diabetes Result</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8" />
+  <title>Diabetes Prediction Result</title>
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <h1>Diabetes Prediction</h1>
-  <p><strong>Result:</strong> {{ result }}</p>
-  <p><strong>Confidence:</strong> {{ confidence }}%</p>
-  <img src="/static/sugar.png" alt="sugar" style="width: 300px;">
+  <div class="container">
+    <h1>Diabetes Prediction</h1>
+    <img src="/static/sugar.png" alt="Diabetes Image" />
+    <p class="result-text">Prediction Result: <strong>{{ prediction }}</strong></p>
+    <a href="/" class="back-button">Back to Home</a>
+  </div>
 </body>
 </html>
